@@ -1,21 +1,15 @@
 package org.example.bot;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.objects.Update;
 
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +31,7 @@ public class TailorPedenBot extends TelegramLongPollingBot {
         if (update.hasMessage()) {
             String message = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
+            String text = update.getMessage().getText();
 
             if (message.equals("Сайт")) {
                 sendSaitMessage(chatId);
@@ -46,12 +41,15 @@ public class TailorPedenBot extends TelegramLongPollingBot {
                 sendInfoMessage(chatId);
             }else if (message.equals("Эмодзи")){
                 sendEmojiMessage(chatId);
-            }else if (message.equals("Привет)")){
-                sendHiMessage(chatId);
+            } else if ("Кнопки в чате".equals(text)) {
+                sendInlineButtonsKeyboard(chatId, "Вот 3 кнопки которые пока что никак не используются","Кнопка 1","Кнопка 2","Кнопка 3");
             }
         } else if (update.hasCallbackQuery()) {
+            CallbackQuery callbackQuery = update.getCallbackQuery();
+            String data = callbackQuery.getData();
             String callbackData = update.getCallbackQuery().getData();
             long chatId = update.getCallbackQuery().getMessage().getChatId();
+
 
         }
     }
@@ -74,7 +72,7 @@ public class TailorPedenBot extends TelegramLongPollingBot {
         row1.add(new KeyboardButton("Сайт"));
         row2.add(new KeyboardButton("Информация о боте"));
         row3.add(new KeyboardButton("Эмодзи"));
-        row4.add(new KeyboardButton("Привет)"));
+        row4.add(new KeyboardButton("Кнопки в чате"));
         keyboard.add(row1);
         keyboard.add(row2);
         keyboard.add(row3);
@@ -95,7 +93,7 @@ public class TailorPedenBot extends TelegramLongPollingBot {
         message.setChatId(String.valueOf(chatId));
         message.setText("Информация о боте:\n\n" +
                 "Название: Tailor_Peden_bot\n" +
-                "Версия: 3.6.2");
+                "Версия: 3.8.0");
 
         try {
             execute(message);
@@ -114,17 +112,6 @@ public class TailorPedenBot extends TelegramLongPollingBot {
             e.printStackTrace();
         }
     }
-    private void sendHiMessage(long chatId) {
-        SendMessage message = new SendMessage();
-        message.setChatId(String.valueOf(chatId));
-        message.setText("Ну привет)");
-
-        try {
-            execute(message);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-    }
     private void sendSaitMessage(long chatId) {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
@@ -132,6 +119,33 @@ public class TailorPedenBot extends TelegramLongPollingBot {
 
         try {
             execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+    private void sendInlineButtonsKeyboard(long chatId, String text, String... buttons) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setText(text);
+
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
+
+        for (String buttonLabel : buttons) {
+            InlineKeyboardButton button = new InlineKeyboardButton();
+            button.setText(buttonLabel);
+            button.setCallbackData(buttonLabel);
+            List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
+            keyboardButtonsRow.add(button);
+            rowList.add(keyboardButtonsRow);
+        }
+
+        InlineKeyboardMarkup markupKeyboard = new InlineKeyboardMarkup();
+        markupKeyboard.setKeyboard(rowList);
+
+        sendMessage.setReplyMarkup(markupKeyboard);
+
+        try {
+            execute(sendMessage);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
