@@ -41,15 +41,21 @@ public class TailorPedenBot extends TelegramLongPollingBot {
                 sendInfoMessage(chatId);
             }else if (message.equals("Эмодзи")){
                 sendEmojiMessage(chatId);
-            } else if ("Кнопки в чате".equals(text)) {
-                sendInlineButtonsKeyboard(chatId, "Вот 3 кнопки которые пока что никак не используются","Кнопка 1","Кнопка 2","Кнопка 3");
+            } else if ("Посоветуй игры".equals(text)) {
+                sendInlineButtonsKeyboard(chatId, "Вот 3 игры в роблокс","Phantom Forces","Arsenal","Deepwoken");
             }
         } else if (update.hasCallbackQuery()) {
             CallbackQuery callbackQuery = update.getCallbackQuery();
             String data = callbackQuery.getData();
             String callbackData = update.getCallbackQuery().getData();
             long chatId = update.getCallbackQuery().getMessage().getChatId();
-
+            if ("Phantom Forces".equals(data)) {
+                sendRobloxPhantomForces(chatId);
+            }else if ("Arsenal".equals(data)) {
+                sendRobloxArsenal(chatId);
+            }else if ("Deepwoken".equals(data)) {
+                sendRobloxDeepwoken(chatId);
+            }
 
         }
     }
@@ -72,7 +78,7 @@ public class TailorPedenBot extends TelegramLongPollingBot {
         row1.add(new KeyboardButton("Сайт"));
         row2.add(new KeyboardButton("Информация о боте"));
         row3.add(new KeyboardButton("Эмодзи"));
-        row4.add(new KeyboardButton("Кнопки в чате"));
+        row4.add(new KeyboardButton("Посоветуй игры"));
         keyboard.add(row1);
         keyboard.add(row2);
         keyboard.add(row3);
@@ -93,7 +99,7 @@ public class TailorPedenBot extends TelegramLongPollingBot {
         message.setChatId(String.valueOf(chatId));
         message.setText("Информация о боте:\n\n" +
                 "Название: Tailor_Peden_bot\n" +
-                "Версия: 3.8.0");
+                "Версия: 4.0.0");
 
         try {
             execute(message);
@@ -116,6 +122,39 @@ public class TailorPedenBot extends TelegramLongPollingBot {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
         message.setText("Вот ( •̀ ω •́ )✧"+ "\nhttps://www.youtube.com/watch?v=dQw4w9WgXcQ&t=3s");
+
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+    private void sendRobloxPhantomForces(long chatId) {
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+        message.setText("Вот ( •̀ ω •́ )✧"+ "\nhttps://www.roblox.com/games/292439477/Phantom-Forces-PC");
+
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+    private void sendRobloxArsenal(long chatId) {
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+        message.setText("Вот ( •̀ ω •́ )✧"+ "\nhttps://www.roblox.com/games/286090429/Arsenal");
+
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+    private void sendRobloxDeepwoken(long chatId) {
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+        message.setText("Вот ( •̀ ω •́ )✧"+ "\nhttps://www.roblox.com/games/4111023553/Deepwoken");
 
         try {
             execute(message);
